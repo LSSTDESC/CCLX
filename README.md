@@ -18,7 +18,7 @@ The material in this repository was developed within the LSST DESC using LSST DE
 # CCL documentation
 
 Further CCL documentation can be found in our [Readthedocs page](https://readthedocs.org/projects/ccl/). 
-More examples can be found in our benchmark comparison notebooks [here](https://github.com/LSSTDESC/CCL/tree/master/examples) and in deprecated (pre-CCL v2) notebooks [here](https://github.com/LSSTDESC/CCL/tree/v2.0.1/examples).
+More examples can be found in our benchmark comparison notebooks [here](https://github.com/LSSTDESC/CCL/tree/master/examples) and in deprecated (pre-CCL v2) notebooks [here](https://github.com/LSSTDESC/CCL/tree/v2.0.1/examples). The examples in this repository continue evolving to match developments in the CCL master branch, but you can find examples that are v2-compatible if you restrict to the first set of commits.
 
 # License, Credits, Feedback etc
 The `CCL` code has been released by DESC, although it is still under active development. It is accompanied by a journal paper that describes the development and validation of `CCL`, which you can find on the  arxiv:[1812.05995](https://arxiv.org/abs/1812.05995). If you make use of the ideas or software here, please cite that paper and provide a link to this repository: https://github.com/LSSTDESC/CCL. You are welcome to re-use the code, which is open source and available under terms consistent with our [LICENSE](https://github.com/LSSTDESC/CCL/blob/master/LICENSE), which is a [BSD 3-Clause](https://opensource.org/licenses/BSD-3-Clause) license. 
