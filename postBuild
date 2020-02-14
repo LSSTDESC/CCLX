@@ -1,0 +1,5 @@
+#!/bin/bash
+git clone https://github.com/lesgourg/class_public.git
+cd class_public
+make
+cd ..
