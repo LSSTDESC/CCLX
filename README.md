@@ -15,6 +15,9 @@ This repository collects examples for the usage of the LSST DESC [Core Cosmology
 
 The material in this repository was developed within the LSST DESC using LSST DESC resources. DESC users should use it in accordance with the [LSST DESC publication policy](http://lsstdesc.org/Collaborators). External users are welcome to use the code outside DESC in accordance with the licensing information below.
 
+## Running on binder
+These notebooks can be run online using [binder](http://mybinder.org/v2/gh/LSSTDESC/CCLX/master) (kudos to Antony Lewis for this). Note that some notebooks featuring functionality that hasn't yet been formally released may not run.
+
 # CCL documentation
 
 Further CCL documentation can be found in our [Readthedocs page](https://readthedocs.org/projects/ccl/). 
