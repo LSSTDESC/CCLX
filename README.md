@@ -15,6 +15,18 @@ This repository collects examples for the usage of the LSST DESC [Core Cosmology
 
 The material in this repository was developed within the LSST DESC using LSST DESC resources. DESC users should use it in accordance with the [LSST DESC publication policy](http://lsstdesc.org/Collaborators). External users are welcome to use the code outside DESC in accordance with the licensing information below.
 
+## Suggested flow
+Although each notebook in this directly can be explored independently of all the others, here is a suggested flow if you are just getting started with `CCL`: The [Distance Calculations Example](https://github.com/LSSTDESC/CCLX/blob/master/Distance%20Calculations%20Example.ipynb) will lead you through the basics of setting up a cosmology object in `CCL` and using it from essential calculations based on the cosmological model, such as distances. At this level, you can also explore the [Power spectrum example](https://github.com/LSSTDESC/CCLX/blob/master/Power%20spectrum%20example.ipynb) which shows you several options for modelling the matter power spectrum. (Variants of these predictions are provided in the [PerturbationTheoryPk](https://github.com/LSSTDESC/CCLX/blob/master/PerturbationTheoryPk.ipynb) and the [Halo-model-Pk](https://github.com/LSSTDESC/CCLX/blob/master/Halo-model-Pk.ipynb)notebooks). 
+
+`CCL` uses power spectra and distances to obtain angular power spectra for LSST observbles and their corresponding correlation functions (see [CellsCorrelations](https://github.com/LSSTDESC/CCLX/blob/master/CellsCorrelations.ipynb)). That notebook gives you the essential LSST angular power spectra for lensing and clustering, but you might want to use `CCL` for other types of correlations (see [GeneralizedTracers](https://github.com/LSSTDESC/CCLX/blob/master/GeneralizedTracers.ipynb)). An [MCMC noteboook](https://github.com/LSSTDESC/CCLX/blob/master/MCMC%20Likelihood%20Analysis.ipynb) illustrates how one can use `CCL` with a likelihood sampler to get cosmological constraints given a set of data.  
+
+`CCL` is also capable of giving cluster number counts predictions, as in [Halo-mass-function-example](https://github.com/LSSTDESC/CCLX/blob/master/Halo-mass-function-example.ipynb). You might want to make predictions for other clusters observables. See the [Halo-profiles](https://github.com/LSSTDESC/CCLX/blob/master/Halo%20profiles.ipynb) notebook.
+
+All of the above predictions work for wCDM models. For the beyond-wCDM cases, see the [MG_mu_sigma_examples](https://github.com/LSSTDESC/CCLX/blob/master/MG_mu_sigma_examples.ipynb).
+
+Finally, for some utilities, such as reading and writing `CCL` cosmologies, see [this notebook](https://github.com/LSSTDESC/CCLX/blob/master/Reading-writing-Cosmology-objects.ipynb).
+
+
 ## Running on binder
 These notebooks can be run online using [binder](http://mybinder.org/v2/gh/LSSTDESC/CCLX/master) (kudos to Antony Lewis for this). Note that some notebooks featuring functionality that hasn't yet been formally released may not run.
 
