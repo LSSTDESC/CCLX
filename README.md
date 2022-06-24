@@ -26,9 +26,25 @@ All of the above predictions work for wCDM models. For the beyond-wCDM cases, se
 
 Finally, for some utilities, such as reading and writing `CCL` cosmologies, see [this notebook](https://github.com/LSSTDESC/CCLX/blob/master/Reading-writing-Cosmology-objects.ipynb).
 
-
 ## Running on binder
 These notebooks can be run online using [binder](http://mybinder.org/v2/gh/LSSTDESC/CCLX/master) (kudos to Antony Lewis for this). Note that some notebooks featuring functionality that hasn't yet been formally released may not run.
+
+## Running on Google colab
+
+It is possible to install and run these examples, or your own CCL code, from [Google Colab](https://colab.research.google.com/). To install CCL on Colab, you can do the following (thanks to Jean-Eric Campagne):
+
+```
+!pip install -q condacolab
+
+import condacolab
+
+condacolab.install()
+
+!mamba install pyccl
+
+import pyccl
+```
+
 
 # CCL documentation
 
