@@ -66,7 +66,7 @@ lens_sample:  # lens galaxy sample parameters
       - 2.118943
 source_sample:  # source galaxy sample parameters
   "1":  # year 1 source sample parameters
-    limiting_magnitude: 24.1  # limiting magnitude THIS needs to be checked!
+    limiting_magnitude: 24.1  # limiting magnitude
     sigma_z: 0.05  # photo-z scatter (sigma_z = 0.05 * (1 + z))
     n_tomo_bins: 5  # number of tomographic bins (equal number of galaxies per bin)
     z_start: 0.01  # start of the redshift interval
@@ -80,7 +80,7 @@ source_sample:  # source galaxy sample parameters
     z_variance: 0.05  # redshift variance
     z_bias: 0.  # redshift bias values (5 source bins)
   "10":  # year 10 source sample parameters
-    limiting_magnitude: 25.3  # limiting magnitude THIS needs to be checked!
+    limiting_magnitude: 25.3  # limiting magnitude
     sigma_z: 0.05  # photo-z scatter (sigma_z = 0.05 * (1 + z))
     n_tomo_bins: 5  # number of tomographic bins (equal number of galaxies per bin)
     z_start: 0.01  # start of the redshift interval
