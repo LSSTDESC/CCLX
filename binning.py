@@ -251,7 +251,7 @@ class Binning:
             core = Gaussian(self.redshift_range, spread=z_variance, displacement=z_bias)
             tomofilter = uniform.pdf(self.redshift_range, loc=x1, scale=x2-x1)
             photoz_model = ConvolveDistributions(pdf_z, core, [tomofilter])
-            source_redshift_distribution_dict[bin_centers[index]] = photoz_model.get_distribution()[0]
+            source_redshift_distribution_dict[index] = photoz_model.get_distribution()[0]
         if normalised:
             norm_factor = []
             for i, key in enumerate(list(sorted(source_redshift_distribution_dict.keys()))):
@@ -303,7 +303,7 @@ class Binning:
             core = Gaussian(self.redshift_range, spread=self.sigmaz_lens, displacement=0.)
             tomofilter = uniform.pdf(self.redshift_range, loc=x1, scale=x2-x1)
             photoz_model = ConvolveDistributions(pdf_z, core, [tomofilter])
-            lens_redshift_distribution_dict[bin_centers[index]] = photoz_model.get_distribution()[0]
+            lens_redshift_distribution_dict[index] = photoz_model.get_distribution()[0] 
 
         if normalised:
             norm_factor = []
