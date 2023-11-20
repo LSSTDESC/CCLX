@@ -16,7 +16,7 @@ class Binning:
     def __init__(self,
                  redshift_range,
                  redshift_distribution,
-                 forecast_year=None):
+                 forecast_year={}):
         """
         Performs the slicing of the input redshift distribution into tomographic bins.
         The binning algorithm follows the LSST DESC prescription. For more details, see
@@ -39,14 +39,18 @@ class Binning:
             are "1" and "10"
         """
 
-        if forecast_year is None:
-            forecast_year = {}
-        with open("parameters/lsst_desc_parameters.yaml", "r") as f:
-            self.lsst_parameters = yaml.load(f, Loader=yaml.FullLoader)
+        supported_forecast_years = {"1", "10"}
+        if forecast_year in supported_forecast_years:
+            self.forecast_year = forecast_year
+        else:
+            raise ValueError(f"forecast_year must be one of {supported_forecast_years}.")
 
         self.redshift_range = redshift_range
         self.redshift_distribution = redshift_distribution
         self.forecast_year = forecast_year
+
+        with open("parameters/lsst_desc_parameters.yaml", "r") as f:
+            self.lsst_parameters = yaml.load(f, Loader=yaml.FullLoader)
 
         self.lens_params = self.lsst_parameters["lens_sample"][self.forecast_year]
         self.source_params = self.lsst_parameters["source_sample"][self.forecast_year]
@@ -162,7 +166,7 @@ class Binning:
 
         # Save the data
         if save_file:
-            self.save_to_file(combined_data, file_format)
+            self.save_to_file(combined_data, "source", file_format)
 
         return source_redshift_distribution_dict
 
@@ -224,7 +228,7 @@ class Binning:
 
         # Save the distributions to a file
         if save_file:
-            self.save_to_file(combined_data, file_format)
+            self.save_to_file(combined_data, "lens", file_format)
 
         return lens_redshift_distribution_dict
 
@@ -267,11 +271,11 @@ class Binning:
 
         return bin_centers
 
-    def save_to_file(self, data, file_format="npy"):
+    def save_to_file(self, data, name, file_format="npy"):
 
         if file_format == "npy":
-            np.save(f"./srd_{self.galaxy_sample}_bins_year_{self.forecast_year}.npy", data)
+            np.save(f"./srd_{name}_bins_year_{self.forecast_year}.npy", data)
         elif file_format == "csv":
             dndz_df = pandas.DataFrame(data)
-            dndz_df.to_csv(f"./srd_{self.galaxy_sample}_bins_year_{self.forecast_year}.csv", index=False)
+            dndz_df.to_csv(f"./srd_{name}_bins_year_{self.forecast_year}.csv", index=False)
 
