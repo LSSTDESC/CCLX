@@ -3,14 +3,15 @@
 #  github/nikosarcevic
 #  ----------
 
-import numpy
+import numpy as np
 from numpy import exp
 import pandas
 from scipy.integrate import simpson
 import yaml
 
 
-class SRD:
+# noinspection PyDefaultArgument
+class SRDRedshiftDistributions(object):
     """
         Generate the LSST DESC type redshift distributions
         for lens and source sample for year 1 and year 10.
@@ -22,6 +23,7 @@ class SRD:
         ...
         Attributes
         ----------
+        redshift_range: array
         galaxy_sample: string
             galaxy sample for which the redshift distribution will be
             calculated. Accepted values are "source_galaxies" and
@@ -32,8 +34,11 @@ class SRD:
          """
 
     def __init__(self,
+                 redshift_range,
                  galaxy_sample={},
                  forecast_year={}):
+
+        self.redshift_range = redshift_range
 
         supported_galaxy_samples = {"lens_sample", "source_sample"}
         if galaxy_sample in supported_galaxy_samples:
@@ -54,12 +59,10 @@ class SRD:
         self.pivot_redshift = self.srd_parameters["z_0"]
         self.alpha = self.srd_parameters["alpha"]
         self.beta = self.srd_parameters["beta"]
-        self.z_start = self.srd_parameters["z_start"]
-        self.z_stop = self.srd_parameters["z_stop"]
-        self.z_resolution = self.srd_parameters["z_resolution"]
-
-        # Default LSST DESC redshift interval
-        self.redshift_range = numpy.linspace(self.z_start, self.z_stop, self.z_resolution)
+        self.lsst_z_range = lsst_desc_parameters["lsst_redshift_range"]
+        self.z_start = self.lsst_z_range["z_start"]
+        self.z_stop = self.lsst_z_range["z_stop"]
+        self.z_resolution = self.lsst_z_range["z_resolution"]
 
     def smail_type_distribution(self,
                                 redshift_range,
@@ -70,7 +73,8 @@ class SRD:
         """
         Generate the LSST DESC SRD parametric redshift distribution (Smail-type).
         For details check LSST DESC SRD paper https://arxiv.org/abs/1809.01669, equation 5.
-        The redshift distribution parametrisation is dN / dz = z ^ beta * exp[- (z / z0) ^ alpha],
+        The redshift distribution parametrisation is a smail type of the form
+        N(z) = (z / z0) ^ beta * exp[- (z / z0) ^ alpha],
         where z is redshift, z0 is pivot redshift, and alpha and beta are power law indices.
         ----------
         Arguments:
@@ -101,14 +105,15 @@ class SRD:
     def get_redshift_distribution(self,
                                   redshift_range=None,
                                   normalised=True,
-                                  save_file=True):
+                                  save_file=True,
+                                  file_format="npy"):
         """
-        Generate the LSST DESC type redshift distribution
+        Generate the LSST type redshift distribution
         for lens and source sample for year 1 and year 10.
         See the LSST DESC Science Requirements Document (SRD)
         https://arxiv.org/abs/1809.01669, eq. 5. The model is
         the Smail type redshift distribution of the form
-        dN / dz = z ^ beta * exp[- (z / z0) ^ alpha] where
+        N(z) = (z / z0) ^ beta * exp[- (z / z0) ^ alpha] where
         z is the redshift, z0 is the pivot redshift, and
         beta and alpha are power law parameters. LSST DESC
         has a set of z0, beta, and alpha parameters for
@@ -130,23 +135,39 @@ class SRD:
                 Saves the redshift range and the corresponding redshift
                 distribution to a .csv file (with the redshift and the
                 redshift distribution columns).
+            file_format: string
+                file format of the output file (defaults to .npy).
+                Accepts .npy and .csv.
         Returns:
             srd_redshift_distribution (array):
                 an LSST DESC SRD redshift distribution of a galaxy sample
                 for a chosen forecast year.
         """
 
-        if type(redshift_range) is not numpy.ndarray:
+        # If redshift range is not specified, use the default LSST DESC redshift range
+        if not redshift_range:
             redshift_range = self.redshift_range
 
+        # Generate the LSST DESC SRD redshift distribution
         redshift_distribution = self.smail_type_distribution(redshift_range)
 
+        # Normalise the redshift distribution
         if normalised:
-            normalisation = numpy.array(simpson(redshift_distribution, redshift_range))
-            redshift_distribution = numpy.array(redshift_distribution / normalisation)
+            normalisation = np.array(simpson(redshift_distribution, redshift_range))
+            redshift_distribution = np.array(redshift_distribution / normalisation)
+
+        combined_data = {"redshift": redshift_range, "dndz": redshift_distribution}
+        # Save the redshift distribution to a .csv file
+
         if save_file:
-            dndz_df = pandas.DataFrame({"z": redshift_range, "dndz": redshift_distribution})
-            dndz_df.to_csv(f"./srd_{self.galaxy_sample}_dndz_year{self.forecast_year}.csv",
-                           index=False)
+            self.save_to_file(combined_data, file_format)
 
         return redshift_distribution
+
+    def save_to_file(self, data, file_format="npy"):
+
+        if file_format == "npy":
+            np.save(f"./srd_{self.galaxy_sample}_dndz_year_{self.forecast_year}.npy", data)
+        elif file_format == "csv":
+            dndz_df = pandas.DataFrame(data)
+            dndz_df.to_csv(f"./srd_{self.galaxy_sample}_dndz_year_{self.forecast_year}.csv", index=False)
