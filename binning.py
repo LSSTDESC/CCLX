@@ -244,32 +244,30 @@ class Binning:
         Returns: a nested dictionary of bin centers for source and lens galaxy samples
          for year 1 and year 10 forecast (keys are the forecast years).
             """
-        bin_centers = {"sources": {"1": [], "10": []}, "lenses": {"1": [], "10": []}}
-
-        # Function to calculate and round the bin center
-        def find_bin_center(bin_distribution, redshift_range):
-            max_index = np.argmax(bin_distribution)
-            return round(redshift_range[max_index], decimal_places)
+        bin_centers = {"sources": [], "lenses": []}
 
         # Calculate bin centers for sources
         source_bins = self.source_bins(normalised=True, save_file=False)
-        for year in ["1", "10"]:
-            for index in range(self.n_tomobins_source):
-                bin_center = find_bin_center(source_bins[index], self.redshift_range)
-                bin_centers["sources"][year].append(bin_center)
+        for index in range(self.n_tomobins_source):
+            bin_center = self.find_bin_center(source_bins[index], self.redshift_range, decimal_places)
+            bin_centers["sources"].append(bin_center)
 
         # Calculate bin centers for lenses
         lens_bins = self.lens_bins(normalised=True, save_file=False)
-        for year in ["1", "10"]:
-            for index in range(self.n_tomobins_lens):
-                bin_center = find_bin_center(lens_bins[index], self.redshift_range)
-                bin_centers["lenses"][year].append(bin_center)
+        for index in range(self.n_tomobins_lens):
+            bin_center = self.find_bin_center(lens_bins[index], self.redshift_range, decimal_places)
+            bin_centers["lenses"].append(bin_center)
 
         if save_file:
             # Save to .npy file if save_file is True
             np.save('./srd_bin_centers.npy', bin_centers)
 
         return bin_centers
+
+    def find_bin_center(self, bin_distribution, redshift_range, decimal_places=2):
+        """Helper method to calculate and round the bin center."""
+        max_index = np.argmax(bin_distribution)
+        return round(redshift_range[max_index], decimal_places)
 
     def save_to_file(self, data, name, file_format="npy"):
 
