@@ -260,7 +260,7 @@ class Binning:
 
         if save_file:
             # Save to .npy file if save_file is True
-            np.save('./srd_bin_centers.npy', bin_centers)
+            np.save(f'./srd_bin_centers_y_{self.forecast_year}.npy', bin_centers)
 
         return bin_centers
 
