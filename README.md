@@ -40,7 +40,7 @@ import condacolab
 
 condacolab.install()
 
-!mamba install pyccl
+!conda install --no-pin pyccl
 
 import pyccl
 ```
