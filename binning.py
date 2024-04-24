@@ -86,10 +86,12 @@ class Binning:
         # Calculate the scatter
         scatter = variance * (1 + self.redshift_range)
         # Calculate the upper and lower limits of the integral
-        upper_limit = (upper_edge - self.redshift_range + bias) / np.sqrt(2) / scatter
-        lower_limit = (lower_edge - self.redshift_range + bias) / np.sqrt(2) / scatter
+        lower_limit = (upper_edge - self.redshift_range + bias) / np.sqrt(2) / scatter
+        upper_limit = (lower_edge - self.redshift_range + bias) / np.sqrt(2) / scatter
+
         # Calculate the true redshift distribution
-        true_redshift_distribution = 0.5 * self.redshift_distribution * (erf(upper_limit) - erf(lower_limit))
+        true_redshift_distribution = 0.5 * np.array(self.redshift_distribution) * (erf(upper_limit) - erf(lower_limit))
+
         return true_redshift_distribution
 
     def compute_equal_number_bounds(self, redshift_range, redshift_distribution, n_bins):
@@ -276,4 +278,3 @@ class Binning:
         elif file_format == "csv":
             dndz_df = pandas.DataFrame(data)
             dndz_df.to_csv(f"./srd_{name}_bins_year_{self.forecast_year}.csv", index=False)
-
