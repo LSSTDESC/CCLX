@@ -55,19 +55,6 @@ class Binning:
         self.lens_params = self.lsst_parameters["lens_sample"][self.forecast_year]
         self.source_params = self.lsst_parameters["source_sample"][self.forecast_year]
 
-        self.n_tomobins_lens = self.lens_params["n_tomo_bins"]
-        self.n_tomobins_source = self.source_params["n_tomo_bins"]
-
-        self.z_start_lens = self.lens_params["bin_start"]
-        self.z_stop_lens = self.lens_params["bin_stop"]
-        self.z_spacing_lens = self.lens_params["bin_spacing"]
-
-        self.galaxy_bias = self.lens_params["galaxy_bias_values"]
-        self.z_bias_source = self.source_params["z_bias"]
-        self.z_bias_lens = self.lens_params["z_bias"]
-        self.sigma_z_lens = self.lens_params["sigma_z"]
-        self.sigma_z_source = self.source_params["sigma_z"]
-
     def true_redshift_distribution(self, upper_edge, lower_edge, variance, bias):
         """A function that returns the true redshift distribution of a galaxy sample.
          The true distribution of galaxies is defined as a convolution of an overall galaxy redshift distribution and
@@ -141,18 +128,22 @@ class Binning:
         Returns:
             A source galaxy sample (dictionary), appropriately binned."""
         # Get the bin edges as redshift values directly
-        bins = self.compute_equal_number_bounds(self.redshift_range, self.redshift_distribution, self.n_tomobins_source)
+        bins = self.compute_equal_number_bounds(self.redshift_range,
+                                                self.redshift_distribution,
+                                                self.source_params["n_tomo_bins"])
 
         # Get the bias and variance values for each bin
-        z_bias_list = np.repeat(self.z_bias_source, self.n_tomobins_source)
-        z_variance_list = np.repeat(self.sigma_z_source, self.n_tomobins_source)
+        source_z_bias_list = np.repeat(self.source_params["z_bias"],
+                                       self.source_params["n_tomo_bins"])
+        source_z_variance_list = np.repeat(self.source_params["sigma_z"],
+                                           self.source_params["n_tomo_bins"])
 
         # Create a dictionary of the redshift distributions for each bin
         source_redshift_distribution_dict = {}
         # Loop over the bins: each bin is defined by the upper and lower edge of the bin
         for index, (x1, x2) in enumerate(zip(bins[:-1], bins[1:])):
-            z_bias = z_bias_list[index]
-            z_variance = z_variance_list[index]
+            z_bias = source_z_bias_list[index]
+            z_variance = source_z_variance_list[index]
             source_redshift_distribution_dict[index] = self.true_redshift_distribution(x1, x2, z_variance, z_bias)
 
         # Normalise the distributions
@@ -203,19 +194,21 @@ class Binning:
                 (5 bins) or lens galaxy sample for year 10 (10 bins).
         """
         # Define the bin edges
-        bins = np.arange(self.z_start_lens,
-                         self.z_stop_lens + self.z_spacing_lens,
-                         self.z_spacing_lens)
+        bins = np.arange(self.lens_params["bin_start"],
+                         self.lens_params["bin_stop"] + self.lens_params["bin_spacing"],
+                         self.lens_params["bin_spacing"])
 
         # Get the bias and variance values for each bin
-        z_bias_list = np.repeat(self.z_bias_lens, self.n_tomobins_lens)
-        z_variance_list = np.repeat(self.sigma_z_lens, self.n_tomobins_lens)
+        lens_z_bias_list = np.repeat(self.lens_params["z_bias"],
+                                     self.lens_params["n_tomo_bins"])
+        lens_z_variance_list = np.repeat(self.lens_params["sigma_z"],
+                                         self.lens_params["n_tomo_bins"])
 
         # Create a dictionary of the redshift distributions for each bin
         lens_redshift_distribution_dict = {}
         for index, (x1, x2) in enumerate(zip(bins[:-1], bins[1:])):
-            z_bias = z_bias_list[index]
-            z_variance = z_variance_list[index]
+            z_bias = lens_z_bias_list[index]
+            z_variance = lens_z_variance_list[index]
             lens_redshift_distribution_dict[index] = self.true_redshift_distribution(x1, x2, z_variance, z_bias)
 
         # Normalise the distributions
@@ -250,13 +243,13 @@ class Binning:
 
         # Calculate bin centers for sources
         source_bins = self.source_bins(normalised=True, save_file=False)
-        for index in range(self.n_tomobins_source):
+        for index in range(self.source_params["n_tomo_bins"]):
             bin_center = self.find_bin_center(source_bins[index], self.redshift_range, decimal_places)
             bin_centers["sources"].append(bin_center)
 
         # Calculate bin centers for lenses
         lens_bins = self.lens_bins(normalised=True, save_file=False)
-        for index in range(self.n_tomobins_lens):
+        for index in range(self.lens_params["n_tomo_bins"]):
             bin_center = self.find_bin_center(lens_bins[index], self.redshift_range, decimal_places)
             bin_centers["lenses"].append(bin_center)
 

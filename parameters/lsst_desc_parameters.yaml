@@ -28,7 +28,7 @@ lens_sample: # lens galaxy sample parameters
     beta: 2.  # power law index of the prefactor (check eq.5 in the SRD paper)
     alpha: 0.94  # power law index in the exponent (check eq. 5 in the SRD paper)
     z_0: 0.26  # pivot redshift (check eq. 5 in the SRD paper)
-    n_bar: 18.  # number density per arcmin^2
+    n_gal: 18.  # number density of galaxies per arcmin^2
     galaxy_bias_prefactor: 1.05  # check page 48 of the SRD b(z) = 1.05 / growth_factor(z)
     galaxy_bias_values:
       - 1.562362
@@ -47,7 +47,7 @@ lens_sample: # lens galaxy sample parameters
     beta: 2.  # power law index of the prefactor (check eq. 5 in the SRD paper)
     alpha: 0.90  # power law index in the exponent (check eq. 5 in the SRD paper)
     z_0: 0.28  # pivot redshift (check eq. 5 in the SRD paper)
-    n_bar: 48.  # number density per arcmin^2
+    n_gal: 48.  # number density of galaxies per arcmin^2
     galaxy_bias_prefactor: 0.95  # check page 48 of the SRD b(z) = 0.95 / growth_factor(z)
     galaxy_bias_values:
       - 1.376695
@@ -70,7 +70,7 @@ source_sample: # source galaxy sample parameters
     alpha: 0.78  # power law index in the exponent (check eq. 5 in the SRD paper)
     z_0: 0.13  # pivot redshift (check eq. 5 in the SRD paper)
     mean_eff_z: 0.85  # mean effective redshift
-    n_bar: 10.  # number density per arcmin^2
+    n_gal: 10.  # number density of galaxies per arcmin^2
   "10": # year 10 source sample parameters
     limiting_magnitude: 25.3  # limiting magnitude THIS needs to be checked!
     sigma_z: 0.05  # photo-z variance (scatter = 0.05 * (1 + z))
@@ -80,7 +80,7 @@ source_sample: # source galaxy sample parameters
     alpha: 0.68  # power law index in the exponent (check eq. 5 in the SRD paper)
     z_0: 0.11  # pivot redshift (check eq. 5 in the SRD paper)
     mean_eff_z: 1.05  # mean effective redshift
-    n_bar: 27.  # number density per arcmin^2
+    n_gal: 27.  # number density of galaxies per arcmin^2
 
 lsst_redshift_range:
   z_start: 0.01  # start of the redshift interval

@@ -55,14 +55,8 @@ class SRDRedshiftDistributions(object):
         # Read in the LSST DESC redshift distribution parameters
         with open("parameters/lsst_desc_parameters.yaml", "r") as f:
             lsst_desc_parameters = yaml.load(f, Loader=yaml.FullLoader)
+
         self.srd_parameters = lsst_desc_parameters[self.galaxy_sample][self.forecast_year]
-        self.pivot_redshift = self.srd_parameters["z_0"]
-        self.alpha = self.srd_parameters["alpha"]
-        self.beta = self.srd_parameters["beta"]
-        self.lsst_z_range = lsst_desc_parameters["lsst_redshift_range"]
-        self.z_start = self.lsst_z_range["z_start"]
-        self.z_stop = self.lsst_z_range["z_stop"]
-        self.z_resolution = self.lsst_z_range["z_resolution"]
 
     def smail_type_distribution(self,
                                 redshift_range,
@@ -92,11 +86,11 @@ class SRDRedshiftDistributions(object):
                 """
 
         if not pivot_redshift:
-            pivot_redshift = self.pivot_redshift
+            pivot_redshift = self.srd_parameters["z_0"]
         if not alpha:
-            alpha = self.alpha
+            alpha = self.srd_parameters["alpha"]
         if not beta:
-            beta = self.beta
+            beta = self.srd_parameters["beta"]
 
         redshift_distribution = [z ** beta * exp(-(z / pivot_redshift) ** alpha) for z in redshift_range]
 
