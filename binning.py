@@ -8,6 +8,7 @@ import numpy as np
 import pandas
 from scipy.integrate import simpson, cumtrapz
 from scipy.special import erf
+from scipy.stats import norm
 import yaml
 
 
@@ -55,7 +56,7 @@ class Binning:
         self.lens_params = self.lsst_parameters["lens_sample"][self.forecast_year]
         self.source_params = self.lsst_parameters["source_sample"][self.forecast_year]
 
-    def true_redshift_distribution(self, upper_edge, lower_edge, variance, bias):
+    def true_redshift_distribution(self, upper_edge, lower_edge, variance, bias, outlier_params=None):
         """A function that returns the true redshift distribution of a galaxy sample.
          The true distribution of galaxies is defined as a convolution of an overall galaxy redshift distribution and
          a probability distribution p(z_{ph}|z)  at a given z (z_{ph} is a photometric distribution at a given z).
@@ -78,6 +79,23 @@ class Binning:
 
         # Calculate the true redshift distribution
         true_redshift_distribution = 0.5 * np.array(self.redshift_distribution) * (erf(upper_limit) - erf(lower_limit))
+
+        if outlier_params:
+            outlier_dist = np.zeros_like(self.redshift_distribution)
+            number_of_outlier_centers = len(outlier_params["outlier_center"])
+            for i in range(number_of_outlier_centers):
+                # The outlier population is modeled as a Gaussian distribution
+                outlier_i = self.outlier_distribution(outlier_params["outlier_center"][i], outlier_params["outlier_spread"][i])
+                # Normalizing the integral of the outlier to a outlier_fraction, we divide over the integral of the Gaussian
+                # to account for the compact range of measured z's
+                normmalizer_i = outlier_params["outlier_fraction"][i]/simpson(outlier_i, self.redshift_range)
+                outlier_dist += normmalizer_i * outlier_i
+            total_outlier_fraction = sum(outlier_params["outlier_fraction"])
+            # outlier_dist integrates to one, computing the factor necesary for outlier_dist to contribute to
+            # outlier_fraction of the number o galaxies
+            normalization_factor = simpson(true_redshift_distribution, self.redshift_range)/(1 - total_outlier_fraction)
+            # Adding the outliers to the true_redshift_distribution
+            true_redshift_distribution += normalization_factor * outlier_dist
 
         return true_redshift_distribution
 
@@ -144,7 +162,11 @@ class Binning:
         for index, (x1, x2) in enumerate(zip(bins[:-1], bins[1:])):
             z_bias = source_z_bias_list[index]
             z_variance = source_z_variance_list[index]
-            source_redshift_distribution_dict[index] = self.true_redshift_distribution(x1, x2, z_variance, z_bias)
+            if "outliers" in self.source_params.keys():
+                outlier_params = self.source_params["outliers"]
+            else:
+                outlier_params = None
+            source_redshift_distribution_dict[index] = self.true_redshift_distribution(x1, x2, z_variance, z_bias, outlier_params=outlier_params)
 
         # Normalise the distributions
         if normalised:
@@ -271,3 +293,6 @@ class Binning:
         elif file_format == "csv":
             dndz_df = pandas.DataFrame(data)
             dndz_df.to_csv(f"./srd_{name}_bins_year_{self.forecast_year}.csv", index=False)
+
+    def outlier_distribution(self, outlier_center, outlier_spread):
+        return 1/np.sqrt(2*np.pi*outlier_spread**2)*np.exp(-(self.redshift_range - outlier_center) ** 2 / (2 * outlier_spread ** 2))

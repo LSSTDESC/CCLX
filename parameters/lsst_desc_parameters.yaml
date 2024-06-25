@@ -71,6 +71,16 @@ source_sample: # source galaxy sample parameters
     z_0: 0.13  # pivot redshift (check eq. 5 in the SRD paper)
     mean_eff_z: 0.85  # mean effective redshift
     n_gal: 10.  # number density of galaxies per arcmin^2
+    outliers: # Outlier parammeters as a list of center, fraction and spread
+      outlier_center:
+        - 3.75 # Lyman - Balmer confusion
+        - 0.5 # Lyman alpha - Balmer confusion
+      outlier_fraction: 
+        - 0.1
+        - 0.1
+      outlier_spread:
+        - 0.25
+        - 0.25
   "10": # year 10 source sample parameters
     limiting_magnitude: 25.3  # limiting magnitude THIS needs to be checked!
     sigma_z: 0.05  # photo-z variance (scatter = 0.05 * (1 + z))
