@@ -15,6 +15,7 @@ import yaml
 class Binning:
 
     def __init__(self,
+                 parameter_file,
                  redshift_range,
                  redshift_distribution,
                  forecast_year={}):
@@ -50,7 +51,7 @@ class Binning:
         self.redshift_distribution = redshift_distribution
         self.forecast_year = forecast_year
 
-        with open("parameters/lsst_desc_parameters.yaml", "r") as f:
+        with open(parameter_file, "r") as f:
             self.lsst_parameters = yaml.load(f, Loader=yaml.FullLoader)
 
         self.lens_params = self.lsst_parameters["lens_sample"][self.forecast_year]
@@ -231,7 +232,11 @@ class Binning:
         for index, (x1, x2) in enumerate(zip(bins[:-1], bins[1:])):
             z_bias = lens_z_bias_list[index]
             z_variance = lens_z_variance_list[index]
-            lens_redshift_distribution_dict[index] = self.true_redshift_distribution(x1, x2, z_variance, z_bias)
+            if "outliers" in self.lens_params.keys():
+                outlier_params = self.lens_params["outliers"]
+            else:
+                outlier_params = None
+            lens_redshift_distribution_dict[index] = self.true_redshift_distribution(x1, x2, z_variance, z_bias, outlier_params=outlier_params)
 
         # Normalise the distributions
         if normalised:
