@@ -83,13 +83,12 @@ class Binning:
 
         if outlier_params:
             outlier_dist = np.zeros_like(self.redshift_distribution)
-            number_of_outlier_centers = len(outlier_params["outlier_center"])
-            for i in range(number_of_outlier_centers):
+            number_of_outlier_types = len(outlier_params["outlier_spread"])
+            for i in range(number_of_outlier_types):
                 # The outlier population is modeled as a Gaussian distribution
-                outlier_i = self.outlier_distribution(outlier_params["outlier_center"][i], outlier_params["outlier_spread"][i])
-                # Normalizing the integral of the outlier to a outlier_fraction, we divide over the integral of the Gaussian
-                # to account for the compact range of measured z's
-                normmalizer_i = outlier_params["outlier_fraction"][i]/simpson(outlier_i, self.redshift_range)
+                outlier_i = self.outlier_distribution_confusion(outlier_params["confusion_rate"][i], outlier_params["outlier_spread"][i],upper_edge,lower_edge)
+                # Normalizing the integral of the outlier to a outlier_fraction
+                normmalizer_i = outlier_params["outlier_fraction"][i]
                 outlier_dist += normmalizer_i * outlier_i
             total_outlier_fraction = sum(outlier_params["outlier_fraction"])
             # outlier_dist integrates to one, computing the factor necesary for outlier_dist to contribute to
@@ -299,5 +298,10 @@ class Binning:
             dndz_df = pandas.DataFrame(data)
             dndz_df.to_csv(f"./srd_{name}_bins_year_{self.forecast_year}.csv", index=False)
 
-    def outlier_distribution(self, outlier_center, outlier_spread):
+    def outlier_distribution_confusion(self, confusion_rate, outlier_spread,upper_edge, lower_edge):
+        # Computing the center of the outliers
+        upper_outlier = (1 + upper_edge)*confusion_rate - 1
+        lower_outlier = (1 + lower_edge)*confusion_rate - 1
+        outlier_center = (upper_outlier + lower_outlier)/2
+
         return 1/np.sqrt(2*np.pi*outlier_spread**2)*np.exp(-(self.redshift_range - outlier_center) ** 2 / (2 * outlier_spread ** 2))

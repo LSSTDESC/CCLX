@@ -37,9 +37,9 @@ lens_sample: # lens galaxy sample parameters
       - 2.100644
       - 2.293210
     outliers: # Outlier parammeters as a list of center, fraction and spread
-      outlier_center:
-        - 3.75 # Lyman - Balmer confusion
-        - 0.5 # Lyman alpha - Balmer confusion
+      confusion_rate:
+        - 2.998 # Balmer - Lyman alpha confusion
+        - 0.334 # Lyman alpha - Balmer confusion
       outlier_fraction: 
         - 0.1
         - 0.1
@@ -70,6 +70,16 @@ lens_sample: # lens galaxy sample parameters
       - 1.943754
       - 2.030887
       - 2.118943
+    outliers: # Outlier parammeters as a list of center, fraction and spread
+      confusion_rate:
+        - 2.998 # Balmer - Lyman alpha confusion
+        - 0.334 # Lyman alpha - Balmer confusion
+      outlier_fraction: 
+        - 0.1
+        - 0.1
+      outlier_spread:
+        - 0.25
+        - 0.25
 source_sample: # source galaxy sample parameters
   "1": # year 1 source sample parameters
     limiting_magnitude: 24.1  # limiting magnitude THIS needs to be checked!
@@ -82,9 +92,9 @@ source_sample: # source galaxy sample parameters
     mean_eff_z: 0.85  # mean effective redshift
     n_gal: 10.  # number density of galaxies per arcmin^2
     outliers: # Outlier parammeters as a list of center, fraction and spread
-      outlier_center:
-        - 3.75 # Lyman - Balmer confusion
-        - 0.5 # Lyman alpha - Balmer confusion
+      confusion_rate:
+        - 2.998 # Balmer - Lyman alpha confusion
+        - 0.334 # Lyman alpha - Balmer confusion
       outlier_fraction: 
         - 0.05
         - 0.05
@@ -102,9 +112,9 @@ source_sample: # source galaxy sample parameters
     mean_eff_z: 1.05  # mean effective redshift
     n_gal: 27.  # number density of galaxies per arcmin^2
     outliers: # Outlier parammeters as a list of center, fraction and spread
-      outlier_center:
-        - 3.75 # Lyman - Balmer confusion
-        - 0.5 # Lyman alpha - Balmer confusion
+      confusion_rate:
+        - 2.998 # Balmer - Lyman alpha confusion
+        - 0.334 # Lyman alpha - Balmer confusion
       outlier_fraction: 
         - 0.05
         - 0.05
