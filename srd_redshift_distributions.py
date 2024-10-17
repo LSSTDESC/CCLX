@@ -147,7 +147,7 @@ class SRDRedshiftDistributions(object):
 
         # Normalise the redshift distribution
         if normalised:
-            normalisation = np.array(simpson(redshift_distribution, redshift_range))
+            normalisation = np.array(simpson(redshift_distribution, x=redshift_range))
             redshift_distribution = np.array(redshift_distribution / normalisation)
 
         combined_data = {"redshift": redshift_range, "dndz": redshift_distribution}

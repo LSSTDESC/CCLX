@@ -6,7 +6,7 @@
 
 import numpy as np
 import pandas
-from scipy.integrate import simpson, cumtrapz
+from scipy.integrate import simpson, cumulative_trapezoid
 from scipy.special import erf
 import yaml
 
@@ -96,7 +96,7 @@ class Binning:
         """
 
         # Calculate the cumulative distribution
-        cumulative_distribution = cumtrapz(redshift_distribution, redshift_range, initial=0)
+        cumulative_distribution = cumulative_trapezoid(redshift_distribution, redshift_range, initial=0)
         total_galaxies = cumulative_distribution[-1]
 
         # Find the bin edges
@@ -150,7 +150,7 @@ class Binning:
         if normalised:
             norm_factor = []
             for key in sorted(source_redshift_distribution_dict.keys()):
-                norm_factor.append(simpson(source_redshift_distribution_dict[key], self.redshift_range))
+                norm_factor.append(simpson(source_redshift_distribution_dict[key], x=self.redshift_range))
                 source_redshift_distribution_dict[key] /= norm_factor[-1]
 
             # Create a combined dictionary
@@ -215,7 +215,7 @@ class Binning:
         if normalised:
             norm_factor = []
             for i, key in enumerate(list(sorted(lens_redshift_distribution_dict.keys()))):
-                norm_factor.append(simpson(lens_redshift_distribution_dict[key], self.redshift_range))
+                norm_factor.append(simpson(lens_redshift_distribution_dict[key], x=self.redshift_range))
                 lens_redshift_distribution_dict[key] /= norm_factor[i]
 
         combined_data = {'redshift_range': self.redshift_range,
