@@ -109,7 +109,7 @@ class Binning:
 
         return [redshift_range[0]] + bin_edges + [redshift_range[-1]]
 
-    def source_bins(self, normalised=True, save_file=True, file_format='npy'):
+    def source_bins(self, normalized=True, save_file=True, file_format='npy'):
         """split the initial redshift distribution of source galaxies into tomographic bins.
         LSST DESC case, sources are split into 5 tomographic bins (year 1 and year 10 forecast).
         Each bin has equal number of galaxies. Variance is 0.05 for both forecast years while z_bias is zero.
@@ -118,7 +118,7 @@ class Binning:
         Appendix D.
         ----------
         Arguments:
-            normalised (bool): normalise the redshift distribution (defaults to True).
+            normalized (bool): normalise the redshift distribution (defaults to True).
             save_file (bool): option to save the output as a .csv (defaults to True).
                 Saves the redshift range and the corresponding redshift
                 distributions for each bin. The bin headers are the
@@ -144,10 +144,13 @@ class Binning:
         for index, (x1, x2) in enumerate(zip(bins[:-1], bins[1:])):
             z_bias = source_z_bias_list[index]
             z_variance = source_z_variance_list[index]
-            source_redshift_distribution_dict[index] = self.true_redshift_distribution(x1, x2, z_variance, z_bias)
+            source_redshift_distribution_dict[index] = self.true_redshift_distribution(x1,
+                                                                                       x2,
+                                                                                       z_variance,
+                                                                                       z_bias)
 
         # Normalise the distributions
-        if normalised:
+        if normalized:
             norm_factor = []
             for key in sorted(source_redshift_distribution_dict.keys()):
                 norm_factor.append(simpson(source_redshift_distribution_dict[key], x=self.redshift_range))
@@ -164,7 +167,7 @@ class Binning:
         return source_redshift_distribution_dict
 
     def lens_bins(self,
-                  normalised=True,
+                  normalized=True,
                   save_file=True,
                   file_format='npy'):
         """
@@ -179,7 +182,7 @@ class Binning:
         Appendix D.
         ----------
         Arguments:
-            normalised: bool
+            normalized: bool
                 normalise the redshift distribution (defaults to True).
             save_file: bool
                 option to save the output as a .csv (defaults to True).
@@ -209,10 +212,13 @@ class Binning:
         for index, (x1, x2) in enumerate(zip(bins[:-1], bins[1:])):
             z_bias = lens_z_bias_list[index]
             z_variance = lens_z_variance_list[index]
-            lens_redshift_distribution_dict[index] = self.true_redshift_distribution(x1, x2, z_variance, z_bias)
+            lens_redshift_distribution_dict[index] = self.true_redshift_distribution(x1,
+                                                                                     x2,
+                                                                                     z_variance,
+                                                                                     z_bias)
 
         # Normalise the distributions
-        if normalised:
+        if normalized:
             norm_factor = []
             for i, key in enumerate(list(sorted(lens_redshift_distribution_dict.keys()))):
                 norm_factor.append(simpson(lens_redshift_distribution_dict[key], x=self.redshift_range))
@@ -227,7 +233,7 @@ class Binning:
 
         return lens_redshift_distribution_dict
 
-    def get_bin_centers(self, decimal_places=2, save_file=True):
+    def get_bin_centers(self, decimal_places=3, save_file=True):
         """Method to calculate the bin centers for the source and lens galaxy samples.
         The bin centers are calculated as the redshift value where
         the redshift distribution is maximised.
@@ -242,13 +248,13 @@ class Binning:
         bin_centers = {"sources": [], "lenses": []}
 
         # Calculate bin centers for sources
-        source_bins = self.source_bins(normalised=True, save_file=False)
+        source_bins = self.source_bins(normalized=True, save_file=False)
         for index in range(self.source_params["n_tomo_bins"]):
             bin_center = self.find_bin_center(source_bins[index], self.redshift_range, decimal_places)
             bin_centers["sources"].append(bin_center)
 
         # Calculate bin centers for lenses
-        lens_bins = self.lens_bins(normalised=True, save_file=False)
+        lens_bins = self.lens_bins(normalized=True, save_file=False)
         for index in range(self.lens_params["n_tomo_bins"]):
             bin_center = self.find_bin_center(lens_bins[index], self.redshift_range, decimal_places)
             bin_centers["lenses"].append(bin_center)
@@ -259,7 +265,7 @@ class Binning:
 
         return bin_centers
 
-    def find_bin_center(self, bin_distribution, redshift_range, decimal_places=2):
+    def find_bin_center(self, bin_distribution, redshift_range, decimal_places=3):
         """Helper method to calculate and round the bin center."""
         max_index = np.argmax(bin_distribution)
         return round(redshift_range[max_index], decimal_places)

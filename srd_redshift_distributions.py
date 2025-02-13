@@ -92,67 +92,55 @@ class SRDRedshiftDistributions(object):
         if not beta:
             beta = self.srd_parameters["beta"]
 
-        redshift_distribution = [z ** beta * exp(-(z / pivot_redshift) ** alpha) for z in redshift_range]
+        redshift_distribution = [(z / pivot_redshift) ** beta * exp(-(z / pivot_redshift) ** alpha) for z in redshift_range]
 
-        return redshift_distribution
+        return np.array(redshift_distribution)
 
     def get_redshift_distribution(self,
                                   redshift_range=None,
-                                  normalised=True,
+                                  normalized=True,
                                   save_file=True,
                                   file_format="npy"):
         """
         Generate the LSST type redshift distribution
         for lens and source sample for year 1 and year 10.
-        See the LSST DESC Science Requirements Document (SRD)
-        https://arxiv.org/abs/1809.01669, eq. 5. The model is
-        the Smail type redshift distribution of the form
-        N(z) = (z / z0) ^ beta * exp[- (z / z0) ^ alpha] where
-        z is the redshift, z0 is the pivot redshift, and
-        beta and alpha are power law parameters. LSST DESC
-        has a set of z0, beta, and alpha parameters for
-        lens and source galaxy sample for year 1 and year 10
-        science requirements. The value of the parameters can
-        be found in the SRD paper. The parameters are automatically
-        read from a yaml file included in this repository
-        (lsst_desc_parameters.yaml).
         ----------
         Arguments:
             redshift_range: array
                 an array of redshifts over which the redshift distribution
                 will be defined. If not specified, the SRD default will
                 be used (redshift interval 0.01 < z < 4.).
-            normalised: bool
-                normalise the redshift distribution (defaults to True)
+            normalized: bool
+                normalize p(z) before applying n_gal (default: True).
             save_file: bool
-                option to save the output as a .csv (defaults to True).
-                Saves the redshift range and the corresponding redshift
-                distribution to a .csv file (with the redshift and the
-                redshift distribution columns).
+                save the output to file (default: True).
             file_format: string
-                file format of the output file (defaults to .npy).
-                Accepts .npy and .csv.
+                file format of the output file ('npy' or 'csv').
+
         Returns:
-            srd_redshift_distribution (array):
-                an LSST DESC SRD redshift distribution of a galaxy sample
-                for a chosen forecast year.
+            redshift_distribution: array
+                dN/dz for the galaxy sample.
         """
 
         # If redshift range is not specified, use the default LSST DESC redshift range
-        if not redshift_range:
+        if redshift_range is None:
             redshift_range = self.redshift_range
 
-        # Generate the LSST DESC SRD redshift distribution
-        redshift_distribution = self.smail_type_distribution(redshift_range)
+        # Extract n_gal from YAML
+        n_gal = self.srd_parameters["n_gal"]
 
-        # Normalise the redshift distribution
-        if normalised:
-            normalisation = np.array(simpson(redshift_distribution, x=redshift_range))
-            redshift_distribution = np.array(redshift_distribution / normalisation)
+        # Generate p(z) from Smail distribution
+        p_z = self.smail_type_distribution(redshift_range)
 
+        if normalized:
+            # Normalize p(z) before applying n_gal
+            p_z = p_z / np.trapz(p_z, x=redshift_range)
+
+        # Compute dN/dz = n_gal * p(z)
+        redshift_distribution = n_gal * p_z
+
+        # Save the data if required
         combined_data = {"redshift": redshift_range, "dndz": redshift_distribution}
-        # Save the redshift distribution to a .csv file
-
         if save_file:
             self.save_to_file(combined_data, file_format)
 
