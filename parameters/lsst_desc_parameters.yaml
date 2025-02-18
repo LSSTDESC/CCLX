@@ -85,6 +85,6 @@ source_sample: # source galaxy sample parameters
 lsst_redshift_range:
   z_start: 0.01  # start of the redshift interval
   z_stop: 3.5  # end of the redshift interval
-  z_resolution: 300  # redshift resolution
+  z_resolution: 2000  # redshift resolution
 
 ...
