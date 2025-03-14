@@ -47,70 +47,60 @@ class LSSTGalaxySample:
         Generates the lens sample redshift distribution.
 
         Arguments:
-            normalized: bool - Normalize the redshift distribution (default: True).
-            save_file: bool - Save the output file (default: True).
-            file_format: str - Output file format ('npy', 'csv').
+            normalized (bool): Normalize the redshift distribution (default: True).
+            save_file (bool): Save the output file (default: True).
+            file_format (str): Output file format ('npy', 'csv').
 
         Returns:
-            redshift_distribution: np.array - dN/dz for the lens sample.
+            np.array: Normalized p(z), suitable for CCL.
         """
-        # Get number density of galaxies per arcmin^2 from YAML
-        n_gal = self.lens_params["n_gal"]
-
-        # Compute the Smail-type redshift distribution
+        # Compute the Smail-type redshift distribution (not yet normalized)
         p_z = self.smail_type_distribution(self.redshift_range,
                                            self.lens_params["z_0"],
                                            self.lens_params["alpha"],
                                            self.lens_params["beta"])
 
+        # Normalize the distribution if requested (ALWAYS needed for CCL)
         if normalized:
-            # Normalize p(z) to integrate to 1 before scaling
             p_z = self.normalize_distribution(p_z, method="trapz")
 
-        # Compute dN/dz = Ngal * p(z)
-        redshift_distribution = n_gal * p_z
-
-        combined_data = {"redshift": self.redshift_range, "dndz": redshift_distribution}
-
+        # Save the data if requested
         if save_file:
-            self.save_to_file("lens_sample_dndz", combined_data, file_format)
+            self.save_to_file("lens_sample_pz",
+                              {"redshift": self.redshift_range,
+                               "distribution": p_z}, file_format)
 
-        return redshift_distribution
+        return p_z
 
     def source_sample(self, normalized=True, save_file=True, file_format="npy"):
         """
         Generates the source sample redshift distribution.
 
         Arguments:
-            normalized: bool - Normalize the redshift distribution (default: True).
-            save_file: bool - Save the output file (default: True).
-            file_format: str - Output file format ('npy', 'csv').
+            normalized (bool): Normalize the redshift distribution (default: True).
+            save_file (bool): Save the output file (default: True).
+            file_format (str): Output file format ('npy', 'csv').
 
         Returns:
-            redshift_distribution: np.array - dN/dz for the source sample.
+            np.array: Normalized p(z), suitable for CCL.
         """
-        # Get number density of galaxies per arcmin^2 from YAML
-        n_gal = self.source_params["n_gal"]
-
-        # Compute the Smail-type redshift distribution
+        # Compute the Smail-type redshift distribution (not yet normalized)
         p_z = self.smail_type_distribution(self.redshift_range,
                                            self.source_params["z_0"],
                                            self.source_params["alpha"],
                                            self.source_params["beta"])
 
+        # Normalize the distribution if requested (ALWAYS needed for CCL)
         if normalized:
-            # Normalize p(z) to integrate to 1 before scaling
             p_z = self.normalize_distribution(p_z, method="trapz")
 
-        # Compute dN/dz = Ngal * p(z)
-        redshift_distribution = n_gal * p_z
-
-        combined_data = {"redshift": self.redshift_range, "dndz": redshift_distribution}
-
+        # Save the data if requested
         if save_file:
-            self.save_to_file("source_sample_dndz", combined_data, file_format)
+            self.save_to_file("source_sample_pz",
+                              {"redshift": self.redshift_range, "distribution": p_z},
+                              file_format)
 
-        return redshift_distribution
+        return p_z
 
     def lens_bins(self,
                   normalized=True,
