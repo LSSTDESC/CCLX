@@ -27,7 +27,7 @@ class LSSTGalaxySample:
         else:
             self.redshift_range = redshift_range
 
-        supported_forecast_years = {"1", "10"}
+        supported_forecast_years = {"1", "4", "7", "10"}
         if forecast_year in supported_forecast_years:
             self.forecast_year = forecast_year
         else:

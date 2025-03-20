@@ -1,90 +1,104 @@
 ---
-#  Niko Sarcevic
-#  nikolina.sarcevic@gmail.com
-#  github.com/nikosarcevic
-#  ----------
 
-#  LSST DESC survey parameters
-sky:
-  full_sky: 41252.9612  # full sky in square degrees
-  lsst_sky: 18000  # LSST sky coverage; in square degrees
-  frac_sky: 0.4363  # fraction of the sky covered by LSST
+lens_sample:
+  '1':
+    alpha: 0.94
+    beta: 2.0
+    bin_spacing: 0.2
+    bin_start: 0.2
+    bin_stop: 1.2
+    galaxy_bias_prefactor: 1.05
+    limiting_magnitude: 24.1
+    n_gal: 18.0
+    n_tomo_bins: 5
+    sigma_z: 0.03
+    z_0: 0.26
+    z_bias: 0.0
+  '10':
+    alpha: 0.9
+    beta: 2.0
+    bin_spacing: 0.1
+    bin_start: 0.2
+    bin_stop: 1.2
+    galaxy_bias_prefactor: 0.95
+    limiting_magnitude: 25.3
+    n_gal: 48.0
+    n_tomo_bins: 10
+    sigma_z: 0.03
+    z_0: 0.28
+    z_bias: 0.0
+  '4':
+    alpha: 0.92
+    beta: 2.0
+    bin_spacing: 0.2
+    bin_start: 0.2
+    bin_stop: 1.2
+    galaxy_bias_prefactor: 1.05
+    limiting_magnitude: 24.5
+    n_gal: 28.0
+    n_tomo_bins: 5
+    sigma_z: 0.03
+    z_0: 0.268
+    z_bias: 0.0
+  '7':
+    alpha: 0.91
+    beta: 2.0
+    bin_spacing: 0.1
+    bin_start: 0.2
+    bin_stop: 1.2
+    galaxy_bias_prefactor: 0.95
+    limiting_magnitude: 24.9
+    n_gal: 38.0
+    n_tomo_bins: 10
+    sigma_z: 0.03
+    z_0: 0.272
+    z_bias: 0.0
 
-#  LSST DESC SRD (Science Requirement Document)
-#  redshift distribution parameters. Used to generate
-#  the Smail type redshift distribution:
-#  N (z) = (z / z0) ^ beta * exp([ - (z / z0) ^ alpha]
-#  where z is the redshift. For more information
-#  check https://arxiv.org/abs/1809.01669 (SRD paper)
-lens_sample: # lens galaxy sample parameters
-  "1": # year 1 lens sample parameters
-    limiting_magnitude: 24.1  # limiting magnitude in i-band
-    sigma_z: 0.03  # photo-z variance (scatter = 0.03 (1 + z))
-    z_bias: 0.  # redshift bias values (5 lens bins)
-    n_tomo_bins: 5  # number of tomographic bins
-    bin_start: 0.2  # start of the lens bin redshift range (z_start < z < z_stop)
-    bin_stop: 1.2  # end value of the lens bin range (z_start < z < z_stop)
-    bin_spacing: 0.2  # tomographic bin spacing
-    beta: 2.  # power law index of the prefactor (check eq.5 in the SRD paper)
-    alpha: 0.94  # power law index in the exponent (check eq. 5 in the SRD paper)
-    z_0: 0.26  # pivot redshift (check eq. 5 in the SRD paper)
-    n_gal: 18.  # number density of galaxies per arcmin^2
-    galaxy_bias_prefactor: 1.05  # check page 48 of the SRD b(z) = 1.05 / growth_factor(z)
-    galaxy_bias_values:
-      - 1.562362
-      - 1.732963
-      - 1.913252
-      - 2.100644
-      - 2.293210
-  "10": # year 10 lens sample parameters
-    limiting_magnitude: 25.3  # limiting magnitude in i-band
-    sigma_z: 0.03  # photo-z variance (scatter = 0.03 * (1 + z))
-    z_bias: 0.  # redshift bias values (10 lens bins)
-    n_tomo_bins: 10  # number of tomographic bins
-    bin_start: 0.2  # start of the lens bin redshift range (z_start < z < z_stop)
-    bin_stop: 1.2  # end value of the lens bin redshift range (z_start < z < z_stop)
-    bin_spacing: 0.1  # tomographic bin spacing
-    beta: 2.  # power law index of the prefactor (check eq. 5 in the SRD paper)
-    alpha: 0.90  # power law index in the exponent (check eq. 5 in the SRD paper)
-    z_0: 0.28  # pivot redshift (check eq. 5 in the SRD paper)
-    n_gal: 48.  # number density of galaxies per arcmin^2
-    galaxy_bias_prefactor: 0.95  # check page 48 of the SRD b(z) = 0.95 / growth_factor(z)
-    galaxy_bias_values:
-      - 1.376695
-      - 1.451179
-      - 1.528404
-      - 1.607983
-      - 1.689579
-      - 1.772899
-      - 1.857700
-      - 1.943754
-      - 2.030887
-      - 2.118943
-source_sample: # source galaxy sample parameters
-  "1": # year 1 source sample parameters
-    limiting_magnitude: 24.1  # limiting magnitude THIS needs to be checked!
-    sigma_z: 0.05  # photo-z variance (scatter = 0.05 * (1 + z))
-    z_bias: 0.  # redshift bias values (5 source bins)
-    n_tomo_bins: 5  # number of tomographic bins (equal number of galaxies per bin)
-    beta: 2.  # power law index of the prefactor (check eq. 5 in the SRD paper)
-    alpha: 0.78  # power law index in the exponent (check eq. 5 in the SRD paper)
-    z_0: 0.13  # pivot redshift (check eq. 5 in the SRD paper)
-    mean_eff_z: 0.85  # mean effective redshift
-    n_gal: 10.  # number density of galaxies per arcmin^2
-  "10": # year 10 source sample parameters
-    limiting_magnitude: 25.3  # limiting magnitude THIS needs to be checked!
-    sigma_z: 0.05  # photo-z variance (scatter = 0.05 * (1 + z))
-    z_bias: 0.  # redshift bias values (5 source bins)
-    n_tomo_bins: 5  # number of tomographic bins (equal number of galaxies per bin)
-    beta: 2.  # power law index of the prefactor (check eq. 5 in the SRD paper)
-    alpha: 0.68  # power law index in the exponent (check eq. 5 in the SRD paper)
-    z_0: 0.11  # pivot redshift (check eq. 5 in the SRD paper)
-    mean_eff_z: 1.05  # mean effective redshift
-    n_gal: 27.  # number density of galaxies per arcmin^2
+source_sample:
+  '1':
+    alpha: 0.78
+    beta: 2.0
+    limiting_magnitude: 24.1
+    mean_eff_z: 0.85
+    n_gal: 10.0
+    n_tomo_bins: 5
+    sigma_z: 0.05
+    z_0: 0.13
+    z_bias: 0.0
+  '10':
+    alpha: 0.68
+    beta: 2.0
+    limiting_magnitude: 25.3
+    mean_eff_z: 1.05
+    n_gal: 27.0
+    n_tomo_bins: 5
+    sigma_z: 0.05
+    z_0: 0.11
+    z_bias: 0.0
+  '4':
+    alpha: 0.75
+    beta: 2.0
+    limiting_magnitude: 24.5
+    mean_eff_z: 0.85
+    n_gal: 15.7
+    n_tomo_bins: 5
+    sigma_z: 0.05
+    z_0: 0.12
+    z_bias: 0.0
+  '7':
+    alpha: 0.71
+    beta: 2.0
+    limiting_magnitude: 24.9
+    mean_eff_z: 1.05
+    n_gal: 21.3
+    n_tomo_bins: 5
+    sigma_z: 0.05
+    z_0: 0.12
+    z_bias: 0.0
 
-lsst_redshift_range:
-  z_start: 0.01  # start of the redshift interval
-  z_stop: 3.5  # end of the redshift interval
-  z_resolution: 2000  # redshift resolution
+  sky:
+    frac_sky: 0.4363
+    full_sky: 41252.9612
+    lsst_sky: 18000
 
 ...
